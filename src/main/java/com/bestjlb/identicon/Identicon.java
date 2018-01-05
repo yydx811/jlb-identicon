@@ -4,6 +4,7 @@ import com.bestjlb.identicon.config.DigestConfig;
 import com.bestjlb.identicon.config.ImageConfig;
 import com.bestjlb.identicon.image.Png;
 import com.bestjlb.identicon.utils.ColorUtils;
+import org.apache.commons.codec.digest.MessageDigestAlgorithms;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.Arrays;

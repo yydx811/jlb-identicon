@@ -236,7 +236,11 @@ public class Png implements Image {
             e1 = c1 >> 2;
             c2 = s.charAt(i + 1);
             e2 = ((c1 & 3) << 4) | (c2 >> 4);
-            c3 = s.charAt(i + 2);
+            if (i + 2 == l) {
+                c3 = 0;
+            } else {
+                c3 = s.charAt(i + 2);
+            }
             if (l < i + 2) {
                 e3 = 64;
             } else {

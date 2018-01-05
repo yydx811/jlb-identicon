@@ -78,7 +78,7 @@ public class ImageConfig {
      */
     private ImageFormat format;
 
-    private final int baseMargin;
+    private int baseMargin;
 
     private int cell;
 
@@ -216,6 +216,10 @@ public class ImageConfig {
 
     public int getBaseMargin() {
         return baseMargin;
+    }
+
+    public void setBaseMargin(int baseMargin) {
+        this.baseMargin = baseMargin;
     }
 
     public int getCell() {
