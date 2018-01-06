@@ -88,15 +88,33 @@ public class ImageConfig {
      * 默认配置
      */
     public ImageConfig() {
-        this.bgRed = 255;
-        this.bgGreen = 255;
-        this.bgBlue = 255;
-        this.bgAlpha = 255;
-        this.size = 64;
-        this.marginPercent = 0.08d;
-        this.saturation = 0.5d;
-        this.lightness = 0.7d;
-        this.format = ImageFormat.PNG;
+        this(255, 255, 255, 255, 0, 0, 0, 0, 64, 0.08d, 0d, 0.5d, 0.7d, ImageFormat.PNG);
+    }
+
+    public ImageConfig(int size) {
+        this(255, 255, 255, 255, 0, 0, 0, 0, size, 0.08d, 0d, 0.5d, 0.7d, ImageFormat.PNG);
+    }
+
+    public ImageConfig(int size, double marginPercent) {
+        this(255, 255, 255, 255, 0, 0, 0, 0, size, marginPercent, 0d, 0.5d, 0.7d, ImageFormat.PNG);
+    }
+
+    public ImageConfig(int bgRed, int bgGreen, int bgBlue, int bgAlpha, int fgRed, int fgGreen, int fgBlue, int fgAlpha,
+                       int size, double marginPercent, double hue, double saturation, double lightness, ImageFormat format) {
+        this.bgRed = bgRed;
+        this.bgGreen = bgGreen;
+        this.bgBlue = bgBlue;
+        this.bgAlpha = bgAlpha;
+        this.fgRed = fgRed;
+        this.fgGreen = fgGreen;
+        this.fgBlue = fgBlue;
+        this.fgAlpha = fgAlpha;
+        this.size = size;
+        this.marginPercent = marginPercent;
+        this.hue = hue;
+        this.saturation = saturation;
+        this.lightness = lightness;
+        this.format = format;
         this.baseMargin = (int) Math.floor(size * marginPercent);
         this.cell = (int) Math.floor((size - (baseMargin * 2)) / 5);
         this.margin = (int) Math.floor((size - cell * 5) / 2);
@@ -170,16 +188,8 @@ public class ImageConfig {
         return size;
     }
 
-    public void setSize(int size) {
-        this.size = size;
-    }
-
     public double getMarginPercent() {
         return marginPercent;
-    }
-
-    public void setMarginPercent(double marginPercent) {
-        this.marginPercent = marginPercent;
     }
 
     public double getHue() {
@@ -218,24 +228,12 @@ public class ImageConfig {
         return baseMargin;
     }
 
-    public void setBaseMargin(int baseMargin) {
-        this.baseMargin = baseMargin;
-    }
-
     public int getCell() {
         return cell;
     }
 
-    public void setCell(int cell) {
-        this.cell = cell;
-    }
-
     public int getMargin() {
         return margin;
-    }
-
-    public void setMargin(int margin) {
-        this.margin = margin;
     }
 
     public boolean isSvg() {

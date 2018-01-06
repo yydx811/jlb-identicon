@@ -32,6 +32,9 @@ public class Identicon {
         }
         StringBuilder builder = new StringBuilder();
         Stream.of(args).forEach(builder::append);
+        if (builder.length() == 0) {
+            throw new IllegalArgumentException("arguments can't be empty!");
+        }
         String hash = digestConfig.digestHex(builder.toString());
 
         int cell = imageConfig.getCell();
