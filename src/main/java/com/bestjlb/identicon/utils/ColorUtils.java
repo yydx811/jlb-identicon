@@ -17,7 +17,7 @@ public class ColorUtils {
      *          lightness，亮度。
      * @return
      */
-    public static double[] hsl2rgb(double h, double s, double l) {
+    public static int[] hsl2rgb(double h, double s, double l) {
         h *= 6;
 
         double[] d = {
@@ -29,10 +29,10 @@ public class ColorUtils {
                 l + s
         };
 
-        return new double[]{
-                d[ ~~(int) h % 6 ],
-                d[ ((int) h | 16) % 6 ],
-                d[ ((int) h | 8)  % 6 ]
+        return new int[]{
+                (int) (d[~~(int) h % 6] * 255),
+                (int) (d[((int) h | 16) % 6] * 255),
+                (int) (d[((int) h | 8)  % 6] * 255)
         };
     }
 }

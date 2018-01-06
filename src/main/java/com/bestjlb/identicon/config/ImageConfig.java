@@ -236,10 +236,6 @@ public class ImageConfig {
         return margin;
     }
 
-    public boolean isSvg() {
-        return ImageFormat.SVG.equals(this.format);
-    }
-
     public boolean emptyFgRGB() {
         return this.fgRed == 0 && this.fgGreen == 0 && this.fgBlue == 0 && this.fgAlpha == 0;
     }

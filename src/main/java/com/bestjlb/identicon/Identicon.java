@@ -2,14 +2,13 @@ package com.bestjlb.identicon;
 
 import com.bestjlb.identicon.config.DigestConfig;
 import com.bestjlb.identicon.config.ImageConfig;
+import com.bestjlb.identicon.enums.ImageFormat;
+import com.bestjlb.identicon.image.Image;
 import com.bestjlb.identicon.image.Png;
+import com.bestjlb.identicon.image.Svg;
 import com.bestjlb.identicon.utils.ColorUtils;
-import org.apache.commons.codec.digest.MessageDigestAlgorithms;
 import org.apache.commons.lang3.ArrayUtils;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.stream.Stream;
 
 /**
@@ -26,7 +25,7 @@ public class Identicon {
         this.digestConfig = digestConfig;
     }
 
-    public String getBase64Png(String... args) {
+    public String getBase64Image(ImageFormat format, String... args) {
         if (ArrayUtils.isEmpty(args)) {
             throw new IllegalArgumentException("arguments can't be empty!");
         }
@@ -42,10 +41,10 @@ public class Identicon {
         int fgRed, fgGreen, fgBlue, fgAlpha;
 
         if (imageConfig.emptyFgRGB()) {
-            double[] rgb = ColorUtils.hsl2rgb((double) Integer.parseInt(hash.substring(hash.length() - 7), 16) / 0xfffffff, 0.5d, 0.7d);
-            fgRed = (int) (rgb[0] * 255);
-            fgGreen = (int) (rgb[1] * 255);
-            fgBlue = (int) (rgb[2] * 255);
+            int[] rgb = ColorUtils.hsl2rgb((double) Integer.parseInt(hash.substring(hash.length() - 7), 16) / 0xfffffff, 0.5d, 0.7d);
+            fgRed = rgb[0];
+            fgGreen = rgb[1];
+            fgBlue = rgb[2];
             fgAlpha = 255;
         } else {
             fgRed = imageConfig.getFgRed();
@@ -54,22 +53,45 @@ public class Identicon {
             fgAlpha = imageConfig.getFgAlpha();
         }
 
-        Png png = new Png(imageConfig.getSize(), imageConfig.getSize(), 256);
-        String bg = png.color(imageConfig.getBgRed(), imageConfig.getBgGreen(), imageConfig.getBgBlue(), imageConfig.getBgAlpha());
-        String fg = png.color(fgRed, fgGreen, fgBlue, fgAlpha);
+        Image image;
+        if (format == null) {
+            format = imageConfig.getFormat();
+        }
+        switch (format) {
+            case PNG:
+                image = new Png(imageConfig.getSize(), imageConfig.getSize(), 256);
+                break;
+            case SVG:
+                image = new Svg(imageConfig.getSize(), imageConfig.getBgRed(), imageConfig.getBgGreen(), imageConfig.getBgBlue(),
+                    imageConfig.getBgAlpha(), fgRed, fgGreen, fgBlue, fgAlpha);
+                break;
+            default:
+                throw new RuntimeException("image format not found!");
+        }
+
+        String bg = image.color(imageConfig.getBgRed(), imageConfig.getBgGreen(), imageConfig.getBgBlue(), imageConfig.getBgAlpha());
+        String fg = image.color(fgRed, fgGreen, fgBlue, fgAlpha);
 
         for (int i = 0; i < 15; ++i) {
             String color = Integer.parseInt(String.valueOf(hash.charAt(i)), 16) % 2 == 0 ? fg : bg;
             if (i < 5) {
-                png.rectangle(2 * cell + margin, i * cell + margin, cell, cell, color);
+                image.rectangle(2 * cell + margin, i * cell + margin, cell, cell, color);
             } else if (i < 10) {
-                png.rectangle(1 * cell + margin, (i - 5) * cell + margin, cell, cell, color);
-                png.rectangle(3 * cell + margin, (i - 5) * cell + margin, cell, cell, color);
+                image.rectangle(1 * cell + margin, (i - 5) * cell + margin, cell, cell, color);
+                image.rectangle(3 * cell + margin, (i - 5) * cell + margin, cell, cell, color);
             } else if (i < 15) {
-                png.rectangle(0 * cell + margin, (i - 10) * cell + margin, cell, cell, color);
-                png.rectangle(4 * cell + margin, (i - 10) * cell + margin, cell, cell, color);
+                image.rectangle(0 * cell + margin, (i - 10) * cell + margin, cell, cell, color);
+                image.rectangle(4 * cell + margin, (i - 10) * cell + margin, cell, cell, color);
             }
         }
-        return png.getBase64();
+        return image.getBase64();
+    }
+
+    public String getBase64Png(String... args) {
+        return getBase64Image(ImageFormat.PNG, args);
+    }
+
+    public String getBase64Svg(String... args) {
+        return getBase64Image(ImageFormat.SVG, args);
     }
 }

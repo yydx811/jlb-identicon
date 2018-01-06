@@ -156,7 +156,8 @@ public class Png implements Image {
         writeBuffer(offset + size - 4, byte4(crc ^ -1));
     }
 
-    private String getPNG() {
+    @Override
+    public String getImage() {
         int base = 65521;
         int max = 5552;
         int s1 = 1;
@@ -189,9 +190,10 @@ public class Png implements Image {
         return "\211PNG\r\n\032\n" + builder.toString();
     }
 
+    @Override
     public String color(int red, int green, int blue, int alpha) {
         String result;
-        if (alpha < 0) {
+        if (alpha < 0 || alpha > 255) {
             alpha = 255;
         }
         int color = ((alpha << 8 | red) << 8 | green) << 8 | blue;
@@ -215,6 +217,7 @@ public class Png implements Image {
         return result;
     }
 
+    @Override
     public void rectangle(int x, int y, int width, int height, String color) {
         for (int i = x; i < x + width; ++i) {
             for (int j = y; j < y + height; ++j) {
@@ -223,8 +226,9 @@ public class Png implements Image {
         }
     }
 
+    @Override
     public String getBase64() {
-        String s = getPNG();
+        String s = getImage();
         String ch = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
         int c1, c2, c3, e1, e2, e3, e4;
         int l = s.length();
